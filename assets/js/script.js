@@ -1,110 +1,105 @@
-// var startButton = document.querySelector('.start-button')
-// var quizStart = document.querySelector('.quiz-start')
-// var timer = document.querySelector('#time')
-// var questionEl = document.querySelector('.question')
-// var answerButtons = document.getElementById('answer-buttons')
-// var quizBox = document.querySelector('.quiz-box')
-// var correctAnswer = document.getElementById('right');
-// var wrongAnswer = document.getElementById('wrong');
-
-
-// var questionIndex = 0
-// var score = 0;
-// var timeLeft = 100;
-
-// var questionsAsked = [
+var questions = [
     
-//     {question: "Commonly used data types DO NOT include:", 
-//     options: ["strings", "booleans", "alerts", "numbers"], 
-//     answer: "alerts"},
+    {question: "Commonly used data types DO NOT include:", 
+    answers: [
+        {text: "strings", correct: false},
+        {text: "booleans", correct: false},
+        {text: "alerts", correct: true},
+        {text: "numbers", correct: false}
+    ] },
 
-//     {question: "The condition in an 'if/else' statement is enclosed within ______.", 
-//     options: ["quotes", "curly brackets", "parentheses", "square brackets"], 
-//     answer: "parentheses"},
+    {question: "The condition in an 'if/else' statement is enclosed within ______.", 
+    answers: [
+        {text: "quotes", correct: false},
+        {text: "curly brackets", correct: false},
+        {text: "parentheses", correct: true},
+        {text: "square brackets", correct: false}
+    ] },
 
-//     {question: "Arrays in Javascript can be used to store ______.", 
-//     options: ["numbers & strings", "other arrays", "booleans", "all of the above"],
-//     answer: "all of the above"},
+    {question: "Arrays in Javascript can be used to store ______.",
+    answers: [
+        {text: "numbers & strings", correct: false},
+        {text: "other arrays", correct: false},
+        {text: "booleans", correct: false},
+        {text: "all of the above", correct: true}
+    ] },
 
-//     {question: "String values must be enclosed within ______ when being assigned to variables.", 
-//     options: ["commas", "curly brackets", "quotes", "parantheses"], 
-//     answer: "quotes"},
+    {question: "String values must be enclosed within ______ when being assigned to variables.", 
+    answers: [
+        {text: "commas", correct: false},
+        {text: "curly brackets", correct: false},
+        {text: "quotes", correct: true},
+        {text: "parantheses", correct: false},
+    ] },
 
-//     {question: "A very useful tool used during development and debugging for printing content to the debugger is:", 
-//     options: ["Javascript", "terminal/bash", "for loops", "console.log"], 
-//     answer: "terminal/bash"}
-// ];
+    {question: "A very useful tool used during development and debugging for printing content to the debugger is:", 
+    answers: [
+        {text: "Javascript", correct: false},
+        {text: "terminal/bash", correct: true},
+        {text: "for loops", correct: false},
+        {text: "console.log", correct: false},
+    ] }
+    ,
+];
+
+const questionElement = document.getElementById('question');
+const answerButtons = document.getElementById('answer-buttons');
+const nextButton = document.getElementById('next-btn');
+
+let currentQuestionIndex = 0;
+let score = 0;
+
+// function to start quiz and initiate showQuestion function
+function startQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    nextButton.innerHTML = "Next";
+    showQuestion();
+}
+
+function showQuestion() {
+    resetState();
+    let currentQuestion = questions[currentQuestionIndex];
+    let questionNo = currentQuestionIndex + 1;
+    questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
+
+    currentQuestion.answers.forEach(answer => {
+        const button = document.createElement("button");
+        button.innerHTML = answer.text;
+        button.classList.add("btn");
+        answerButtons.appendChild(button);
+        if(answer.correct) {
+            button.dataset.correct = answer.correct;
+        }
+        button.addEventListener("click", selectAnswer)
+    });
+}
+
+function resetState() {
+    nextButton.style.display = "none";
+    while(answerButtons.firstChild) {
+        answerButtons.removeChild(answerButtons.firstChild);
+    }
+}
+
+function selectAnswer() {
+    const selectedBtn = e.target;
+    const isCorrect = selectedBtn.dataset.correct === "true";
+    if(isCorrect) {
+        selectedBtn.classList.add('correct');
+    } else {
+        selectedBtn.classList.add('incorrect');
+    }
+    Array.from(answerButtons.children).forEach(button => {
+        if(button.dataset.correct ==="true") {
+            button.classList.add('correct');
+        }
+        button.disabled = true;
+    });
+    nextButton.style.display = 'block';
+}
+
+startQuiz();
 
 
-// startButton.addEventListener('click', function () {
-
-//     timer.style.display = 'flex';
-//     quizStart.style.display = 'block';
-//     startButton.style.display = 'none';
-
-//     var timeInterval = setInterval(function () { 
-//         if (timeLeft > 0) {
-//             timer.textContent = 'Time: ' + timeLeft + ' seconds';
-//             timeLeft--;
-//         } else if (timeLeft === 1) {
-//             timer.textContent = 'Time ' + timeleft + 'second';
-//             timeLeft--;
-//         } else {
-//             timer.textContent = "Time's up!";
-//             quizStart.style.display = 'none';
-//             clearInterval(timeInterval);
-//         } 
-//     }, 1000);
-
-//     showQuestion();
-// }
-// )
-
-// function showQuestion() {
-//     var currentQuestion = questionsAsked[questionIndex];
-//     var questionNum = questionIndex + 1;
-//     questionEl.innerHTML = questionNum + ". " + currentQuestion.question;
-
-//     answerButtons.innerHTML = '';
-
-//     currentQuestion.options.forEach(function (option) {
-//         var button = document.createElement("button");
-//         button.innerHTML = option;
-//         button.classList.add("btn");
-//         answerButtons.appendChild(button);
-//         correctAnswer.style.display = 'none';
-//         wrongAnswer.style.display = 'none';
-//         if (option === currentQuestion.answer) {
-//             button.dataset.correct = true;
-//         }
-//         button.addEventListener("click", selectAnswer);
-//     });
-
-//     setTimeout(showQuestion, 2000)
-// }
-
-// function selectAnswer(event) {
-//     var selectedButton = event.target;
-//     var correct = selectedButton.dataset.correct === "true";
-
-//     if (correct) {
-//         score++; // Increment the score if the answer is correct
-//         correctAnswer.style.display = 'flex';
-//     }
-//     else {
-//         timeleft -= 10;
-//         wrongAnswer.style.display = 'flex';
-//     }
-
-//     questionIndex++; // Move to the next question
-//     if (questionIndex < questionsAsked.length) {
-//         showQuestion(); // Display the next question
-//     } else {
-//         // Quiz is finished
-//         quizBox.style.display = 'none';
-//         correctAnswer.style.display = 'none';
-//         wrongAnswer.style.display = 'none';
-//         // You can do something here to display the user's score or other results
-//     }
-// }
 
