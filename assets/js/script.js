@@ -1,3 +1,4 @@
+// questions and answers functions will use within the quiz
 var questions = [
     
     {question: "Commonly used data types DO NOT include:", 
@@ -46,6 +47,9 @@ const questionElement = document.getElementById('question');
 const answerButtons = document.getElementById('answer-buttons');
 const nextButton = document.getElementById('next-btn');
 const timerElement = document.getElementById('timer');
+const startButton = document.getElementById('start');
+const initialsElement = document.getElementById('initials');
+const saveButton = document.getElementById('save');
 
 //defining variables
 let currentQuestionIndex = 0;
@@ -69,15 +73,18 @@ function timer() {
     }, 1000);
 }
 
-// function to start quiz and initiate showQuestion function
+// function to start quiz while showing necessary elements and initiate showQuestion function
 function startQuiz() {
     currentQuestionIndex = 0;
     score = 0;
     nextButton.innerHTML = "Next";
+    questionElement.style.display = "block";
+    answerButtons.style.display = "block";
+    startButton.style.display = "none";
     showQuestion();
     timer();
 }
-
+// function to display current question and answers associated with it
 function showQuestion() {
     resetState();
     let currentQuestion = questions[currentQuestionIndex];
@@ -96,6 +103,7 @@ function showQuestion() {
     });
 }
 
+//function to reset the answer buttons and hide the next button
 function resetState() {
     nextButton.style.display = "none";
     while(answerButtons.firstChild) {
@@ -103,6 +111,7 @@ function resetState() {
     }
 }
 
+//function to handle the user's answer selection
 function selectAnswer(e) {
     const selectedBtn = e.target;
     const isCorrect = selectedBtn.dataset.correct === "true";
@@ -122,14 +131,31 @@ function selectAnswer(e) {
     nextButton.style.display = "block";
 }
 
+//function to display the user's score and high scores
 function showScore() {
     resetState();
     questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
-    nextButton.innerHTML = "Play Again";
     timerElement.style.display = "none";
-    nextButton.style.display = "block";
+    startButton.style.display = "none";
+    saveButton.style.display = "block";
+    initialsElement.style.display = "inline";
+
+    const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
+
+    if(highScores.length > 0) {
+        const highScoresList = document.createElement('ol');
+        highScoresList.classList.add("high-scores");
+        highScores.forEach((score, index) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${index + 1}. ${score.initials} - ${score.score}`;
+            highScoresList.appendChild(listItem);
+        });
+        questionElement.appendChild(highScoresList);
+        highScoresList.style.marginTops = "15px"
+    }
 }
 
+// function to handle the Next button click
 function handleNextButton() {
     currentQuestionIndex++;
     if(currentQuestionIndex < questions.length) {
@@ -139,6 +165,7 @@ function handleNextButton() {
     }
 }
 
+// event listener associated with the next button
 nextButton.addEventListener("click", () => {
     if(currentQuestionIndex < questions.length) {
         handleNextButton();
@@ -146,7 +173,35 @@ nextButton.addEventListener("click", () => {
         startQuiz();
     }
 })
-startQuiz();
 
+//function that allows user to save their score
+function saveScore() {
+    const initials = initialsElement.value.trim();
+    if (initials === " ") {
+        alert("Please enter your initials.");
+        return;
+    }
+    const userScore = {
+        initials: initials,
+        score: score
+    };
 
+    const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
+    highScores.push(userScore);
+    highScores.sort((a,b) => b.score - a.score);
+
+    localStorage.setItem("highScores", JSON.stringify(highScores));
+    alert("Saved!");
+
+    startButton.style.display = "block";
+    saveButton.style.display = "none";
+    initialsElement.style.display = "none";
+    startButton.innerHTML = "Play again?";
+}
+
+//start button event listener to iniate quiz
+startButton.addEventListener("click", startQuiz)
+
+//event listener for the save button
+saveButton.addEventListener("click", saveScore)
 

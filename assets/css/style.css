@@ -25,6 +25,10 @@ body {
     padding-bottom: 20px;
 }
 
+#question {
+    display: none;
+}
+
 #timer {
     font-size: 18px;
     color: #001e4d;
@@ -78,10 +82,44 @@ body {
     display: none;
 }
 
+#start {
+    background: #001e4d;
+    color: #fff;
+    font-weight: 500;
+    width: 150px;
+    border: 0;
+    padding: 10px;
+    margin: 20px auto 0;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#save {
+    background: #001e4d;
+    color: #fff;
+    font-weight: 500;
+    width: 150px;
+    border: 0;
+    padding: 10px;
+    margin: 20px auto 0;
+    border-radius: 4px;
+    cursor: pointer;
+    display: none;
+}
+
+#answer-buttons {
+    display: none;
+}
+
 .correct {
     background: #9aeabc;
 }
 
 .incorrect {
     background: #ff9393;
+}
+
+#initials {
+    display: none;
+    margin: 15px auto 0;
 }
